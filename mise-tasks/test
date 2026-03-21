@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force squarectl .
+mise cache clear
+mise install squarectl@1.6.0
+
+# Capture and display the output while also verifying it
+output=$(mise exec "squarectl@1.6.0" -- "squarectl" --version)
+echo "squarectl output: ${output}"
+
+if echo "${output}" | grep -q '1.6.0'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version squarectl@1.6.0"
+  exit 1
+fi
